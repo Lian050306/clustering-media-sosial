@@ -1,0 +1,21 @@
+{
+  "total_responden": 544,
+  "rata2_medsos": 6.78,
+  "rata2_tidur": 5.77,
+  "silhouette_score": 0.6166,
+  "optimal_k": 10,
+  "cluster_counts": {
+    "3": 102,
+    "6": 83,
+    "7": 69,
+    "0": 63,
+    "1": 54,
+    "4": 48,
+    "5": 37,
+    "9": 34,
+    "2": 30,
+    "8": 24
+  },
+  "persen_pengaruh_tidur": 165.8,
+  "persen_pengaruh_prestasi": 136.0
+}

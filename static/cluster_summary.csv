@@ -1,0 +1,11 @@
+cluster,Rata2 Medsos,Min Medsos,Max Medsos,Rata2 Tidur,Min Tidur,Max Tidur,Proporsi IPK Baik,Proporsi Pengaruh ke Prestasi,Proporsi Pengaruh ke Tidur,Tipe,Jumlah
+0,8.0,8,8,6.0,6,6,2.02,2.02,2.0,Pengguna Berat - Tidur Cukup,63
+1,8.0,8,8,6.0,6,6,2.0,1.24,1.0,Pengguna Berat - Tidur Cukup,54
+2,3.93,3,4,4.93,4,5,1.7,1.33,1.57,Pengguna Sedang - Kurang Tidur,30
+3,8.0,8,8,6.0,6,6,2.0,1.0,2.0,Pengguna Berat - Tidur Cukup,102
+4,4.0,4,4,6.0,6,6,1.62,2.0,1.81,Pengguna Sedang - Tidur Cukup,48
+5,8.0,8,8,5.0,5,5,1.65,2.0,1.78,Pengguna Berat - Kurang Tidur,37
+6,8.0,8,8,6.0,6,6,1.0,1.52,1.82,Pengguna Berat - Tidur Cukup,83
+7,4.0,4,4,6.0,6,6,1.83,1.0,1.61,Pengguna Sedang - Tidur Cukup,69
+8,5.0,5,5,5.0,5,5,0.29,0.21,0.08,Pengguna Sedang - Kurang Tidur,24
+9,8.0,8,8,5.0,5,5,1.88,1.0,1.59,Pengguna Berat - Kurang Tidur,34
