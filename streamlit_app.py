@@ -71,6 +71,22 @@ optimal_k = 10
 kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init=10)
 df['cluster'] = kmeans.fit_predict(X_scaled)
 
+df['cluster'] = kmeans.fit_predict(X_scaled)
+
+# ========== HITUNG PROPORSISI YANG BENAR UNTUK TABEL ==========
+cluster_stats = df.groupby('cluster').agg({
+    'jam_medsos': 'mean',
+    'jam_tidur': 'mean',
+    'ipk_encoded': lambda x: (x.sum() / len(x)) * 100,
+    'pengaruh_encoded': lambda x: (x.sum() / len(x)) * 100,
+    'tidur_encoded': lambda x: (x.sum() / len(x)) * 100
+}).round(1)
+
+cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 
+                         'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
+                         'Pengaruh ke Tidur (%)']
+cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
+
 # Silhouette score
 sil_score = silhouette_score(X_scaled, df['cluster'])
 
@@ -215,14 +231,21 @@ st.markdown("---")
 # ============================================================
 st.subheader("📋 Karakteristik Setiap Klaster (10 Klaster)")
 
-# Buat tabel ringkasan
-cluster_summary = df.groupby('cluster').agg({
+# KODE BARU (INI YANG DIPAKE)
+cluster_stats = df.groupby('cluster').agg({
     'jam_medsos': 'mean',
     'jam_tidur': 'mean',
-    'ipk_encoded': 'mean',
-    'pengaruh_encoded': 'mean',
-    'tidur_encoded': 'mean'
-}).round(2)
+    'ipk_encoded': lambda x: (x.sum() / len(x)) * 100,
+    'pengaruh_encoded': lambda x: (x.sum() / len(x)) * 100,
+    'tidur_encoded': lambda x: (x.sum() / len(x)) * 100
+}).round(1)
+
+cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 
+                         'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
+                         'Pengaruh ke Tidur (%)']
+cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
+
+st.dataframe(cluster_stats, use_container_width=True)
 
 cluster_summary.columns = ['Rata2 Medsos', 'Rata2 Tidur', 'Proporsi IPK Baik', 
                            'Proporsi Pengaruh ke Prestasi', 'Proporsi Pengaruh ke Tidur']
