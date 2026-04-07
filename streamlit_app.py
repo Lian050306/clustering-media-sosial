@@ -4,9 +4,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import joblib
-import pickle
-import os
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
@@ -66,26 +63,10 @@ X = df[fitur]
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Gunakan 10 klaster (atau sesuaikan)
+# Gunakan 10 klaster
 optimal_k = 10
 kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init=10)
 df['cluster'] = kmeans.fit_predict(X_scaled)
-
-df['cluster'] = kmeans.fit_predict(X_scaled)
-
-# ========== HITUNG PROPORSISI YANG BENAR UNTUK TABEL ==========
-cluster_stats = df.groupby('cluster').agg({
-    'jam_medsos': 'mean',
-    'jam_tidur': 'mean',
-    'ipk_encoded': lambda x: (x.sum() / len(x)) * 100,
-    'pengaruh_encoded': lambda x: (x.sum() / len(x)) * 100,
-    'tidur_encoded': lambda x: (x.sum() / len(x)) * 100
-}).round(1)
-
-cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 
-                         'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
-                         'Pengaruh ke Tidur (%)']
-cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
 
 # Silhouette score
 sil_score = silhouette_score(X_scaled, df['cluster'])
@@ -110,7 +91,6 @@ st.subheader("📈 Penentuan Jumlah Klaster Optimal")
 col1, col2 = st.columns(2)
 
 with col1:
-    # Elbow Method
     inertia = []
     K_range = range(2, 11)
     for k in K_range:
@@ -127,7 +107,6 @@ with col1:
     st.pyplot(fig)
 
 with col2:
-    # Silhouette Score
     sil_scores = []
     for k in K_range:
         km = KMeans(n_clusters=k, random_state=42, n_init=10)
@@ -227,11 +206,11 @@ with col2:
 st.markdown("---")
 
 # ============================================================
-# ROW 5: TABEL KARAKTERISTIK KLASTER
+# ROW 5: TABEL KARAKTERISTIK KLASTER (DIPERBAIKI)
 # ============================================================
 st.subheader("📋 Karakteristik Setiap Klaster (10 Klaster)")
 
-# KODE BARU (INI YANG DIPAKE)
+# Hitung statistik per klaster
 cluster_stats = df.groupby('cluster').agg({
     'jam_medsos': 'mean',
     'jam_tidur': 'mean',
@@ -240,43 +219,18 @@ cluster_stats = df.groupby('cluster').agg({
     'tidur_encoded': lambda x: (x.sum() / len(x)) * 100
 }).round(1)
 
+# Beri nama kolom (5 kolom)
 cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 
                          'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
                          'Pengaruh ke Tidur (%)']
+
+# Tambahkan kolom Jumlah
 cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
-
-st.dataframe(cluster_stats, use_container_width=True)
-
-cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 'Proporsi IPK Baik', 
-                           'Proporsi Pengaruh ke Prestasi', 'Proporsi Pengaruh ke Tidur']
-cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
-
-# Interpretasi
-tipe_klaster = []
-for i in range(optimal_k):
-    medsos = cluster_stats.iloc[i]['Rata2 Medsos']
-    tidur = cluster_stats.iloc[i]['Rata2 Tidur']
-    
-    if medsos > 6:
-        tipe = "🔴 Pengguna Berat"
-    elif medsos > 3:
-        tipe = "🟡 Pengguna Sedang"
-    else:
-        tipe = "🟢 Pengguna Ringan"
-    
-    if tidur < 6:
-        kualitas = "Kurang Tidur"
-    elif tidur < 8:
-        kualitas = "Tidur Cukup"
-    else:
-        kualitas = "Tidur Ideal"
-    
-    tipe_klaster.append(f"{tipe} - {kualitas}")
-
-cluster_stats['Tipe'] = tipe_klaster
 
 # Tampilkan tabel
 st.dataframe(cluster_stats, use_container_width=True)
+
+st.markdown("---")
 
 # ============================================================
 # ROW 6: HISTOGRAM
