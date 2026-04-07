@@ -206,7 +206,7 @@ with col2:
 st.markdown("---")
 
 # ============================================================
-# ROW 5: TABEL KARAKTERISTIK KLASTER (DIPERBAIKI)
+# ROW 5: TABEL KARAKTERISTIK KLASTER (DENGAN TIPE)
 # ============================================================
 st.subheader("📋 Karakteristik Setiap Klaster (10 Klaster)")
 
@@ -219,7 +219,7 @@ cluster_stats = df.groupby('cluster').agg({
     'tidur_encoded': lambda x: (x.sum() / len(x)) * 100
 }).round(1)
 
-# Beri nama kolom (5 kolom)
+# Beri nama kolom
 cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 
                          'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
                          'Pengaruh ke Tidur (%)']
@@ -227,10 +227,34 @@ cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur',
 # Tambahkan kolom Jumlah
 cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
 
-# Tampilkan tabel
-st.dataframe(cluster_stats, use_container_width=True)
+# ========== TAMBAHKAN KOLOM TIPE ==========
+def tentukan_tipe(row):
+    medsos = row['Rata2 Medsos']
+    tidur = row['Rata2 Tidur']
+    
+    if medsos > 6:
+        tipe_medsos = "Pengguna Berat"
+    elif medsos > 3:
+        tipe_medsos = "Pengguna Sedang"
+    else:
+        tipe_medsos = "Pengguna Ringan"
+    
+    if tidur < 6:
+        tipe_tidur = "Kurang Tidur"
+    elif tidur < 8:
+        tipe_tidur = "Tidur Cukup"
+    else:
+        tipe_tidur = "Tidur Ideal"
+    
+    return f"{tipe_medsos} - {tipe_tidur}"
 
-st.markdown("---")
+cluster_stats['Tipe'] = cluster_stats.apply(tentukan_tipe, axis=1)
+
+# Tampilkan tabel (dengan kolom Tipe)
+st.dataframe(cluster_stats[['Jumlah', 'Tipe', 'Rata2 Medsos', 'Rata2 Tidur', 
+                            'IPK Baik (%)', 'Pengaruh ke Prestasi (%)', 
+                            'Pengaruh ke Tidur (%)']], 
+             use_container_width=True)
 
 # ============================================================
 # ROW 6: HISTOGRAM
