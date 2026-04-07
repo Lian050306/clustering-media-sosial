@@ -247,15 +247,15 @@ cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
 
 st.dataframe(cluster_stats, use_container_width=True)
 
-cluster_summary.columns = ['Rata2 Medsos', 'Rata2 Tidur', 'Proporsi IPK Baik', 
+cluster_stats.columns = ['Rata2 Medsos', 'Rata2 Tidur', 'Proporsi IPK Baik', 
                            'Proporsi Pengaruh ke Prestasi', 'Proporsi Pengaruh ke Tidur']
-cluster_summary['Jumlah'] = df['cluster'].value_counts().sort_index()
+cluster_stats['Jumlah'] = df['cluster'].value_counts().sort_index()
 
 # Interpretasi
 tipe_klaster = []
 for i in range(optimal_k):
-    medsos = cluster_summary.iloc[i]['Rata2 Medsos']
-    tidur = cluster_summary.iloc[i]['Rata2 Tidur']
+    medsos = cluster_stats.iloc[i]['Rata2 Medsos']
+    tidur = cluster_stats.iloc[i]['Rata2 Tidur']
     
     if medsos > 6:
         tipe = "🔴 Pengguna Berat"
@@ -273,10 +273,10 @@ for i in range(optimal_k):
     
     tipe_klaster.append(f"{tipe} - {kualitas}")
 
-cluster_summary['Tipe'] = tipe_klaster
+cluster_stats['Tipe'] = tipe_klaster
 
 # Tampilkan tabel
-st.dataframe(cluster_summary, use_container_width=True)
+st.dataframe(cluster_stats, use_container_width=True)
 
 # ============================================================
 # ROW 6: HISTOGRAM
